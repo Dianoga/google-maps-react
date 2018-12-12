@@ -59,6 +59,10 @@ export class Circle extends React.Component {
     if (this.circle) {
       this.circle.setMap(null);
     }
+
+    if (this.marker) {
+      this.marker.setMap(null);
+    }
   }
 
   renderCircle() {
@@ -83,11 +87,11 @@ export class Circle extends React.Component {
     }
 
     const params = {
-      ...props,
       map,
       center,
       radius,
       draggable,
+      editable,
       visible,
       options: {
         strokeColor,
@@ -99,6 +103,16 @@ export class Circle extends React.Component {
     };
 
     this.circle = new google.maps.Circle(params);
+
+    if (props.centerMarker) {
+      this.marker = new google.maps.Marker({
+        position: center,
+        visible,
+        draggable: editable || draggable,
+        map
+      });
+      this.circle.bindTo('center', this.marker, 'position');
+    }
 
     evtNames.forEach(e => {
       this.circle.addListener(e, this.handleEvent(e));
@@ -135,6 +149,7 @@ Circle.propTypes = {
   fillOpacity: PropTypes.number,
   draggable: PropTypes.bool,
   visible: PropTypes.bool,
+  centerMarker: PropTypes.bool
 }
 
 evtNames.forEach(e => Circle.propTypes[e] = PropTypes.func)

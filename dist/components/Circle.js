@@ -28,20 +28,6 @@
     };
   }
 
-  var _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
   function _objectWithoutProperties(obj, keys) {
     var target = {};
 
@@ -147,6 +133,10 @@
         if (_this.circle) {
           _this.circle.setMap(null);
         }
+
+        if (_this.marker) {
+          _this.marker.setMap(null);
+        }
       }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
@@ -190,18 +180,20 @@
             fillColor = _props2.fillColor,
             fillOpacity = _props2.fillOpacity,
             draggable = _props2.draggable,
+            editable = _props2.editable,
             visible = _props2.visible,
-            props = _objectWithoutProperties(_props2, ['map', 'google', 'center', 'radius', 'strokeColor', 'strokeOpacity', 'strokeWeight', 'fillColor', 'fillOpacity', 'draggable', 'visible']);
+            props = _objectWithoutProperties(_props2, ['map', 'google', 'center', 'radius', 'strokeColor', 'strokeOpacity', 'strokeWeight', 'fillColor', 'fillOpacity', 'draggable', 'editable', 'visible']);
 
         if (!google) {
           return null;
         }
 
-        var params = _extends({}, props, {
+        var params = {
           map: map,
           center: center,
           radius: radius,
           draggable: draggable,
+          editable: editable,
           visible: visible,
           options: {
             strokeColor: strokeColor,
@@ -210,9 +202,19 @@
             fillColor: fillColor,
             fillOpacity: fillOpacity
           }
-        });
+        };
 
         this.circle = new google.maps.Circle(params);
+
+        if (props.centerMarker) {
+          this.marker = new google.maps.Marker({
+            position: center,
+            visible: visible,
+            draggable: editable || draggable,
+            map: map
+          });
+          this.circle.bindTo('center', this.marker, 'position');
+        }
 
         evtNames.forEach(function (e) {
           _this2.circle.addListener(e, _this2.handleEvent(e));
@@ -256,7 +258,8 @@
     fillColor: _propTypes2.default.string,
     fillOpacity: _propTypes2.default.number,
     draggable: _propTypes2.default.bool,
-    visible: _propTypes2.default.bool
+    visible: _propTypes2.default.bool,
+    centerMarker: _propTypes2.default.bool
   };
 
   evtNames.forEach(function (e) {
