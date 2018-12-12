@@ -215,7 +215,7 @@
               'div',
               null,
               _react2.default.createElement(WrappedComponent, props),
-              _react2.default.createElement('div', { ref: 'map' })
+              _react2.default.createElement('div', { ref: this.mapRef })
             );
           }
         }]);

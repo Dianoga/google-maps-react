@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 
 import { arePathsEqual } from '../lib/arePathsEqual';
 import { camelize } from '../lib/String';
-const evtNames = ['click', 'mouseout', 'mouseover'];
+const evtNames = ['click', 'mouseout', 'mouseover', 'dragstart', 'drag', 'dragend', 'radius_changed', 'center_changed'];
 
-const wrappedPromise = function() {
-    var wrappedPromise = {},
-        promise = new Promise(function
-           (resolve, reject) {
-            wrappedPromise.resolve = resolve;
-            wrappedPromise.reject = reject;
-        });
-    wrappedPromise.then = promise.then.bind(promise);
-    wrappedPromise.catch = promise.catch.bind(promise);
-    wrappedPromise.promise = promise;
+const wrappedPromise = function () {
+  var wrappedPromise = {},
+    promise = new Promise(function
+      (resolve, reject) {
+      wrappedPromise.resolve = resolve;
+      wrappedPromise.reject = reject;
+    });
+  wrappedPromise.then = promise.then.bind(promise);
+  wrappedPromise.catch = promise.catch.bind(promise);
+  wrappedPromise.promise = promise;
 
-    return wrappedPromise;
+  return wrappedPromise;
 }
 
 export class Circle extends React.Component {
@@ -73,12 +73,13 @@ export class Circle extends React.Component {
       fillColor,
       fillOpacity,
       draggable,
+      editable,
       visible,
       ...props
     } = this.props;
 
     if (!google) {
-        return null;
+      return null;
     }
 
     const params = {

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import {camelize} from './lib/String';
-import {makeCancelable} from './lib/cancelablePromise';
+import { camelize } from './lib/String';
+import { makeCancelable } from './lib/cancelablePromise';
 
 const mapStyles = {
   container: {
@@ -42,13 +42,13 @@ const evtNames = [
   'zoom_changed'
 ];
 
-export {wrapper as GoogleApiWrapper} from './GoogleApiComponent';
-export {Marker} from './components/Marker';
-export {InfoWindow} from './components/InfoWindow';
-export {HeatMap} from './components/HeatMap';
-export {Polygon} from './components/Polygon';
-export {Polyline} from './components/Polyline';
-export {Circle} from './components/Circle';
+export { wrapper as GoogleApiWrapper } from './GoogleApiComponent';
+export { Marker } from './components/Marker';
+export { InfoWindow } from './components/InfoWindow';
+export { HeatMap } from './components/HeatMap';
+export { Polygon } from './components/Polygon';
+export { Polyline } from './components/Polyline';
+export { Circle } from './components/Circle';
 
 export class Map extends React.Component {
   constructor(props) {
@@ -57,6 +57,8 @@ export class Map extends React.Component {
     if (!props.hasOwnProperty('google')) {
       throw new Error('You must include a `google` prop');
     }
+
+    this.mapRef = React.createRef();
 
     this.listeners = {};
     this.state = {
@@ -116,7 +118,7 @@ export class Map extends React.Component {
   }
 
   componentWillUnmount() {
-    const {google} = this.props;
+    const { google } = this.props;
     if (this.geoPromise) {
       this.geoPromise.cancel();
     }
@@ -127,11 +129,10 @@ export class Map extends React.Component {
 
   loadMap() {
     if (this.props && this.props.google) {
-      const {google} = this.props;
+      const { google } = this.props;
       const maps = google.maps;
 
-      const mapRef = this.refs.map;
-      const node = ReactDOM.findDOMNode(mapRef);
+      // const node = ReactDOM.findDOMNode(this.mapRef);
       const curr = this.state.currentLocation;
       const center = new maps.LatLng(curr.lat, curr.lng);
 
@@ -176,7 +177,7 @@ export class Map extends React.Component {
         }
       });
 
-      this.map = new maps.Map(node, mapConfig);
+      this.map = new maps.Map(this.mapRef.current, mapConfig);
 
       evtNames.forEach(e => {
         this.listeners[e] = this.map.addListener(e, this.handleEvent(e));
@@ -206,7 +207,7 @@ export class Map extends React.Component {
   recenterMap() {
     const map = this.map;
 
-    const {google} = this.props;
+    const { google } = this.props;
 
     if (!google) return;
     const maps = google.maps;
@@ -224,13 +225,13 @@ export class Map extends React.Component {
 
   restyleMap() {
     if (this.map) {
-      const {google} = this.props;
+      const { google } = this.props;
       google.maps.event.trigger(this.map, 'resize');
     }
   }
 
   renderChildren() {
-    const {children} = this.props;
+    const { children } = this.props;
 
     if (!children) return;
 
@@ -257,7 +258,7 @@ export class Map extends React.Component {
 
     return (
       <div style={containerStyles} className={this.props.className}>
-        <div style={style} ref="map">
+        <div style={style} ref={this.mapRef}>
           Loading map...
         </div>
         {this.renderChildren()}

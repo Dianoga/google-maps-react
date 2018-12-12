@@ -102,7 +102,7 @@
     if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
   }
 
-  var evtNames = ['click', 'mouseout', 'mouseover'];
+  var evtNames = ['click', 'mouseout', 'mouseover', 'dragstart', 'drag', 'dragend', 'radius_changed', 'center_changed'];
 
   var wrappedPromise = function wrappedPromise() {
     var wrappedPromise = {},

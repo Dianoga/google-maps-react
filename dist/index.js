@@ -149,6 +149,8 @@
         throw new Error('You must include a `google` prop');
       }
 
+      _this.mapRef = _react2.default.createRef();
+
       _this.listeners = {};
       _this.state = {
         currentLocation: {
@@ -233,8 +235,7 @@
 
           var maps = google.maps;
 
-          var mapRef = this.refs.map;
-          var node = _reactDom2.default.findDOMNode(mapRef);
+          // const node = ReactDOM.findDOMNode(this.mapRef);
           var curr = this.state.currentLocation;
           var center = new maps.LatLng(curr.lat, curr.lng);
 
@@ -276,7 +277,7 @@
             }
           });
 
-          this.map = new maps.Map(node, mapConfig);
+          this.map = new maps.Map(this.mapRef.current, mapConfig);
 
           evtNames.forEach(function (e) {
             _this4.listeners[e] = _this4.map.addListener(e, _this4.handleEvent(e));
@@ -368,7 +369,7 @@
           { style: containerStyles, className: this.props.className },
           _react2.default.createElement(
             'div',
-            { style: style, ref: 'map' },
+            { style: style, ref: this.mapRef },
             'Loading map...'
           ),
           this.renderChildren()
@@ -397,7 +398,7 @@
     zoomControl: _propTypes2.default.bool,
     zoomControlOptions: _propTypes2.default.object,
     mapTypeControl: _propTypes2.default.bool,
-    mapTypeControlOptions: _propTypes2.default.object,
+    mapTypeControlOptions: _propTypes2.default.bool,
     scaleControl: _propTypes2.default.bool,
     streetViewControl: _propTypes2.default.bool,
     streetViewControlOptions: _propTypes2.default.object,
